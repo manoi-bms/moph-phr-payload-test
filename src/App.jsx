@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import AuthBar from './components/AuthBar'
+import AuthModal from './components/AuthModal'
 
 export default function App() {
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -15,7 +16,7 @@ export default function App() {
             Select an endpoint from the sidebar
           </div>
         </div>
-        {/* AuthModal will go here (Task 4) */}
+        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
         {/* HistoryBar will go here (Task 8) */}
       </div>
     </AuthProvider>
