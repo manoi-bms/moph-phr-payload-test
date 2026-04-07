@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState, useCallback } from 'react'
 import { StatusCodeBadge } from './shared/Badge'
 import Spinner from './shared/Spinner'
 
@@ -12,7 +12,26 @@ function MonacoFallback() {
   )
 }
 
+function formatSize(charCount) {
+  if (charCount < 1024) return `${charCount} chars`
+  if (charCount < 1024 * 1024) return `${(charCount / 1024).toFixed(1)} KB`
+  return `${(charCount / (1024 * 1024)).toFixed(1)} MB`
+}
+
 export default function ResponsePanel({ response, loading }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = useCallback(async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Fallback for environments where clipboard API is unavailable
+      setCopied(false)
+    }
+  }, [])
+
   // Loading state
   if (loading) {
     return (
@@ -63,6 +82,15 @@ export default function ResponsePanel({ response, loading }) {
         )}
         <span className={`text-sm ${statusColor}`}>{response.statusText}</span>
         <span className="text-xs text-gray-500">{response.elapsed}ms</span>
+        <span className="text-xs text-gray-500">{formatSize(responseText.length)}</span>
+        <button
+          onClick={() => handleCopy(responseText)}
+          className="px-2 py-0.5 rounded text-xs text-gray-400 hover:text-gray-200 hover:bg-gray-700 transition-colors"
+          title="Copy response to clipboard"
+          data-testid="copy-response"
+        >
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
         {response.url && (
           <span className="text-xs text-gray-600 font-mono truncate flex-1 text-right">{response.url}</span>
         )}

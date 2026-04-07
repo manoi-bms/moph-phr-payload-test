@@ -1,4 +1,4 @@
-import { useState, useCallback, lazy, Suspense } from 'react'
+import { useState, useCallback, useEffect, useRef, lazy, Suspense } from 'react'
 import { useEndpoint } from '../context/EndpointContext'
 import { useAuth } from '../context/AuthContext'
 import { MethodBadge } from './shared/Badge'
@@ -22,6 +22,31 @@ export default function RequestPanel({ onSend, sending }) {
   // For GET endpoints with queryParams
   const [queryParams, setQueryParams] = useState({})
 
+  // Debounced JSON validation
+  const [jsonValid, setJsonValid] = useState(null) // null = no check, true = valid, false = invalid
+  const debounceRef = useRef(null)
+
+  useEffect(() => {
+    if (!selectedEndpoint || selectedEndpoint.method === 'GET') {
+      setJsonValid(null)
+      return
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      if (!requestBody.trim()) {
+        setJsonValid(null)
+        return
+      }
+      try {
+        JSON.parse(requestBody)
+        setJsonValid(true)
+      } catch {
+        setJsonValid(false)
+      }
+    }, 300)
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [requestBody, selectedEndpoint])
+
   const handleEditorChange = useCallback((value) => {
     setRequestBody(value || '')
   }, [setRequestBody])
@@ -30,7 +55,7 @@ export default function RequestPanel({ onSend, sending }) {
     setQueryParams(prev => ({ ...prev, [key]: value }))
   }, [])
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (!selectedEndpoint) return
     if (selectedEndpoint.method === 'GET' && selectedEndpoint.queryParams) {
       onSend({ queryParams })
@@ -45,7 +70,19 @@ export default function RequestPanel({ onSend, sending }) {
         onSend({ body: requestBody, jsonError: e.message })
       }
     }
-  }
+  }, [selectedEndpoint, onSend, queryParams, requestBody])
+
+  // Ctrl+Enter / Cmd+Enter keyboard shortcut to send
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        if (!sending) handleSend()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [handleSend, sending])
 
   if (!selectedEndpoint) {
     return (
@@ -66,6 +103,15 @@ export default function RequestPanel({ onSend, sending }) {
       <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-700 bg-gray-800 shrink-0">
         <MethodBadge method={selectedEndpoint.method} />
         <span className="font-mono text-sm text-gray-300 flex-1 truncate">{selectedEndpoint.path}</span>
+        {jsonValid !== null && selectedEndpoint.method !== 'GET' && (
+          <span
+            data-testid="json-validity"
+            className={`text-sm font-bold ${jsonValid ? 'text-green-400' : 'text-red-400'}`}
+            title={jsonValid ? 'Valid JSON' : 'Invalid JSON'}
+          >
+            {jsonValid ? '\u2713' : '\u2717'}
+          </span>
+        )}
         <span className="text-xs text-gray-500 hidden sm:inline">{selectedEndpoint.description}</span>
         <button
           onClick={resetTemplate}
@@ -78,7 +124,7 @@ export default function RequestPanel({ onSend, sending }) {
           onClick={handleSend}
           disabled={sending || (selectedEndpoint.authRequired && !isAuthenticated)}
           className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded text-sm font-medium text-white flex items-center gap-2 transition-colors"
-          title={selectedEndpoint.authRequired && !isAuthenticated ? 'Authentication required' : 'Send request'}
+          title={selectedEndpoint.authRequired && !isAuthenticated ? 'Authentication required' : 'Send request (Ctrl+Enter)'}
         >
           {sending && <Spinner size="sm" />}
           Send

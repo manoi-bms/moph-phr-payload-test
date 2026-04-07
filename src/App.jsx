@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { EndpointProvider, useEndpoint } from './context/EndpointContext'
 import { HistoryProvider } from './context/HistoryContext'
@@ -11,20 +11,32 @@ import RequestPanel from './components/RequestPanel'
 import ResponsePanel from './components/ResponsePanel'
 import HistoryBar from './components/HistoryBar'
 import { sendRequest } from './utils/apiClient'
+import { useToast } from './components/shared/Toast'
 
 function MainContent() {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [sending, setSending] = useState(false)
   const [response, setResponse] = useState(null)
   const { selectedEndpoint, selectEndpoint, setRequestBody } = useEndpoint()
-  const { token, proxyBase } = useAuth()
+  const { token, proxyBase, isAuthenticated } = useAuth()
   const { addEntry } = useHistory()
+  const { showToast, ToastContainer } = useToast()
+  const prevAuth = useRef(isAuthenticated)
+
+  // Show toast on successful auth
+  useEffect(() => {
+    if (isAuthenticated && !prevAuth.current) {
+      showToast('Authenticated successfully', 'success')
+    }
+    prevAuth.current = isAuthenticated
+  }, [isAuthenticated, showToast])
 
   const handleSend = useCallback(async (data) => {
     if (!selectedEndpoint) return
 
     // Check for JSON parse error from RequestPanel
     if (data.jsonError) {
+      showToast(`JSON Parse Error: ${data.jsonError}`, 'error', 5000)
       setResponse({
         status: 0,
         statusText: 'JSON Parse Error',
@@ -71,7 +83,7 @@ function MainContent() {
     } finally {
       setSending(false)
     }
-  }, [selectedEndpoint, token, proxyBase, addEntry])
+  }, [selectedEndpoint, token, proxyBase, addEntry, showToast])
 
   const handleReplay = useCallback((entry) => {
     selectEndpoint(entry.endpointId)
@@ -107,6 +119,7 @@ function MainContent() {
       </div>
       <HistoryBar onReplay={handleReplay} />
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      {ToastContainer}
     </div>
   )
 }
