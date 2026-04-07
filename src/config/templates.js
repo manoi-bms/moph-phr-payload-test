@@ -263,6 +263,11 @@ export const templates = {
           ]
         },
         recordedDate: "2024-01-15T10:00:00+07:00",
+        recordOfficer: {
+          reference: "Practitioner/ว000099",
+          identifier: "ว000099",
+          display: "นพ.ทดสอบ ระบบ"
+        },
         reaction: [
           {
             manifestation: [
@@ -287,6 +292,7 @@ export const templates = {
     Patient: { ...patientBlock },
     ChronicDiseaseRegister: [
       {
+        managingOrganization: { ...managingOrganization },
         code: {
           coding: [
             {
@@ -306,7 +312,9 @@ export const templates = {
           ]
         },
         registerDate: "2024-01-15",
-        chronic_ref_code: "00000:CHR00001"
+        chronic_ref_code: "00000:CHR00001",
+        clinicalText: "NIDDM Type 2",
+        description: ["โรคเบาหวานชนิดที่ 2"]
       }
     ]
   },
@@ -316,6 +324,8 @@ export const templates = {
     Patient: { ...patientBlock },
     Immunization: [
       {
+        managingOrganization: { ...managingOrganization },
+        status: "completed",
         vaccineCode: {
           coding: [
             {
@@ -323,11 +333,16 @@ export const templates = {
               code: "COVID-19",
               display: "COVID-19 Vaccine"
             }
-          ]
+          ],
+          text: "Covid 19 - CoronaVac"
         },
         encounterRefCode: "00000:VN00001",
         occurrenceDateTime: "2024-01-15T10:00:00+07:00",
+        primarySource: true,
+        location: "โรงพยาบาลทดสอบระบบ",
+        manufacturer: "Sinovac Life Sciences",
         lotNumber: "BATCH001",
+        expirationDate: "2025-12-31",
         site: {
           coding: [
             {
@@ -345,6 +360,15 @@ export const templates = {
               display: "Injection, intramuscular"
             }
           ]
+        },
+        doseQuantity: {
+          value: 0.5,
+          system: "http://unitsofmeasure.org",
+          code: "mL"
+        },
+        performer: {
+          license_no: "ว000099",
+          name: "นพ.ทดสอบ ระบบ"
         }
       }
     ]
@@ -355,7 +379,9 @@ export const templates = {
     Patient: { ...patientBlock },
     ReferralRequest: [
       {
+        managingOrganization: { ...managingOrganization },
         recipientOrganization: {
+          type: "Organization",
           identifier: {
             use: "official",
             system: "https://bps.moph.go.th/hcode/5",
@@ -366,6 +392,7 @@ export const templates = {
         encounterRefCode: "00000:VN00001",
         referralRefCode: "00000:REF00001",
         status: "active",
+        intent: "proposal",
         type: {
           coding: [
             {
@@ -373,9 +400,28 @@ export const templates = {
               code: "1",
               display: "ส่งต่อเพื่อรักษา"
             }
-          ]
+          ],
+          text: "ส่งต่อเพื่อรักษา"
         },
-        priority: "routine"
+        priority: "routine",
+        occurrenceDateTime: "2024-01-15T10:00:00.000Z",
+        authoredOn: "2024-01-15",
+        requester: {
+          agent: {
+            reference: "Practitioner/ว000099",
+            display: "นพ.ทดสอบ ระบบ"
+          }
+        },
+        serviceRequested: {
+          coding: [
+            {
+              system: "http://snomed.info/sct",
+              code: "172676009",
+              display: "Myringotomy and insertion of tympanic ventilation tube"
+            }
+          ],
+          text: "Insertion of grommets"
+        }
       }
     ]
   },
@@ -417,25 +463,31 @@ export const templates = {
             use: "official",
             system: "https://www.dopa.go.th",
             type: "CID",
-            value: "1111111111111"
+            value: "0000000000001"
           }
         ],
-        name: [
-          {
-            use: "official",
-            text: "นางสาวดูแล ผู้ป่วย",
-            family: "ผู้ป่วย",
-            given: ["ดูแล"],
-            prefix: ["นางสาว"]
+        active: true,
+        intent: "directive",
+        name: {
+          use: "official",
+          text: "นางสาวดูแล ผู้ป่วย",
+          languageCode: "TH",
+          family: "ผู้ป่วย",
+          given: ["ดูแล"],
+          prefix: ["นางสาว"],
+          suffix: [],
+          period: {
+            start: "1995-01-01T00:00:00.000Z"
           }
-        ],
+        },
         telecom_phone: "0999999999",
+        care_giver_name: "นางสาวดูแล ผู้ป่วย",
         qualification: {
           coding: [
             {
-              system: "https://phr1.moph.go.th/api/CodingSystem?System=caregiver_qualification",
+              system: "https://phr1.moph.go.th/api/CodingSystem?System=caregiver_type",
               code: "1",
-              display: "ญาติ"
+              display: "บุคคลในครอบครัวเดียวกัน"
             }
           ]
         }
@@ -450,7 +502,8 @@ export const templates = {
       {
         identifier: [
           {
-            system: "https://bps.moph.go.th/hcode/5",
+            use: "official",
+            system: "https://phr1.moph.go.th/eprescription",
             value: "00000:MED00001"
           }
         ],
@@ -465,7 +518,12 @@ export const templates = {
             }
           ]
         },
+        encounter_ref_code: "00000:VN00001",
         authoredOn: "2024-01-15T10:00:00+07:00",
+        requester: {
+          reference: "Practitioner/ว000099",
+          display: "นพ.ทดสอบ ระบบ"
+        },
         dosageInstruction: [
           {
             text: "รับประทานครั้งละ 1 เม็ด วันละ 2 ครั้ง หลังอาหาร",

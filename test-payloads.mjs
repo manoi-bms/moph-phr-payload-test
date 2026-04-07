@@ -66,6 +66,7 @@ const uploadEndpoints = [
         type: "allergy", category: ["medication"], criticality: "high",
         code: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=tmt_substance", code: "579224", display: "PENICILLIN G SODIUM" }] },
         recordedDate: "2024-01-15T10:00:00+07:00",
+        recordOfficer: { reference: "Practitioner/ว000099", identifier: "ว000099", display: "นพ.ทดสอบ ระบบ" },
         reaction: [{ manifestation: [{ coding: [{ system: "http://snomed.info/sct", code: "247472004", display: "Hives" }] }] }]
       }]
     }
@@ -77,10 +78,13 @@ const uploadEndpoints = [
       managingOrganization: { ...managingOrganization },
       Patient: { ...patientBlock },
       ChronicDiseaseRegister: [{
+        managingOrganization: { ...managingOrganization },
         code: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=chronic_disease", code: "001", display: "DM" }] },
         clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active", display: "Active" }] },
         registerDate: "2024-01-15",
-        chronic_ref_code: "00000:CHR00001"
+        chronic_ref_code: "00000:CHR00001",
+        clinicalText: "NIDDM Type 2",
+        description: ["โรคเบาหวานชนิดที่ 2"]
       }]
     }
   },
@@ -91,10 +95,16 @@ const uploadEndpoints = [
       managingOrganization: { ...managingOrganization },
       Patient: { ...patientBlock },
       Immunization: [{
-        vaccineCode: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=vaccine_code", code: "COVID-19", display: "COVID-19 Vaccine" }] },
+        managingOrganization: { ...managingOrganization },
+        status: "completed",
+        vaccineCode: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=vaccine_code", code: "COVID-19", display: "COVID-19 Vaccine" }], text: "Covid 19 - CoronaVac" },
         encounterRefCode: "00000:VN00001",
         occurrenceDateTime: "2024-01-15T10:00:00+07:00",
+        primarySource: true,
+        location: "โรงพยาบาลทดสอบระบบ",
+        manufacturer: "Sinovac Life Sciences",
         lotNumber: "BATCH001",
+        expirationDate: "2025-12-31",
         site: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v3-ActSite", code: "LA", display: "Left Arm" }] },
         route: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration", code: "IM", display: "Injection, intramuscular" }] }
       }]
@@ -107,11 +117,16 @@ const uploadEndpoints = [
       managingOrganization: { ...managingOrganization },
       Patient: { ...patientBlock },
       ReferralRequest: [{
-        recipientOrganization: { identifier: { use: "official", system: "https://bps.moph.go.th/hcode/5", value: "11111" }, display: "โรงพยาบาลปลายทาง" },
+        managingOrganization: { ...managingOrganization },
+        recipientOrganization: { type: "Organization", identifier: { use: "official", system: "https://bps.moph.go.th/hcode/5", value: "11111" }, display: "โรงพยาบาลปลายทาง" },
         encounterRefCode: "00000:VN00001", referralRefCode: "00000:REF00001",
         status: "active",
-        type: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=referral_type", code: "1", display: "ส่งต่อเพื่อรักษา" }] },
-        priority: "routine"
+        intent: "proposal",
+        type: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=referral_type", code: "1", display: "ส่งต่อเพื่อรักษา" }], text: "ส่งต่อเพื่อรักษา" },
+        priority: "routine",
+        occurrenceDateTime: "2024-01-15T10:00:00.000Z",
+        authoredOn: "2024-01-15",
+        serviceRequested: { coding: [{ system: "http://snomed.info/sct", code: "172676009", display: "Myringotomy and insertion of tympanic ventilation tube" }], text: "Insertion of grommets" }
       }]
     }
   },
@@ -142,10 +157,12 @@ const uploadEndpoints = [
       managingOrganization: { ...managingOrganization },
       Patient: { ...patientBlock },
       CareGiver: [{
-        identifier: [{ use: "official", system: "https://www.dopa.go.th", type: "CID", value: "1111111111111" }],
-        name: [{ use: "official", text: "นางสาวดูแล ผู้ป่วย", family: "ผู้ป่วย", given: ["ดูแล"], prefix: ["นางสาว"] }],
+        identifier: [{ use: "official", system: "https://www.dopa.go.th", type: "CID", value: "0000000000001" }],
+        active: true, intent: "directive",
+        name: { use: "official", text: "นางสาวดูแล ผู้ป่วย", languageCode: "TH", family: "ผู้ป่วย", given: ["ดูแล"], prefix: ["นางสาว"], suffix: [], period: { start: "1995-01-01T00:00:00.000Z" } },
         telecom_phone: "0999999999",
-        qualification: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=caregiver_qualification", code: "1", display: "ญาติ" }] }
+        care_giver_name: "นางสาวดูแล ผู้ป่วย",
+        qualification: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=caregiver_type", code: "1", display: "บุคคลในครอบครัวเดียวกัน" }] }
       }]
     }
   },
@@ -156,10 +173,12 @@ const uploadEndpoints = [
       managingOrganization: { ...managingOrganization },
       Patient: { ...patientBlock },
       MedicationRequest: [{
-        identifier: [{ system: "https://bps.moph.go.th/hcode/5", value: "00000:MED00001" }],
+        identifier: [{ use: "official", system: "https://phr1.moph.go.th/eprescription", value: "00000:MED00001" }],
         status: "active", intent: "order",
         medication: { coding: [{ system: "https://www.this.or.th/tmt/gp", code: "811043", display: "METFORMIN 500 mg." }] },
+        encounter_ref_code: "00000:VN00001",
         authoredOn: "2024-01-15T10:00:00+07:00",
+        requester: { reference: "Practitioner/ว000099", display: "นพ.ทดสอบ ระบบ" },
         dosageInstruction: [{ text: "รับประทานครั้งละ 1 เม็ด วันละ 2 ครั้ง หลังอาหาร", timing: { repeat: { frequency: 2, period: 1, periodUnit: "d" } }, route: { coding: [{ system: "http://snomed.info/sct", code: "26643006", display: "Oral route" }] } }],
         dispenseRequest: { quantity: { value: 60, unit: "tablets" }, expectedSupplyDuration: { value: 30, unit: "days" } }
       }]
