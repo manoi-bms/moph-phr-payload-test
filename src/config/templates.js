@@ -14,9 +14,10 @@ const patientBlock = {
       use: "official",
       system: "https://www.dopa.go.th",
       type: "CID",
-      value: "0000000000000"
+      value: "0000000000001"
     }
   ],
+  active: true,
   name: [
     {
       use: "official",
@@ -24,15 +25,65 @@ const patientBlock = {
       languageCode: "TH",
       family: "ระบบ",
       given: ["ทดสอบ"],
-      prefix: ["นาย"]
+      prefix: ["นาย"],
+      suffix: []
     }
   ],
   gender: "male",
-  birthDate: "1990-01-01"
+  birthDate: "1990-01-01",
+  deceasedBoolean: false,
+  maritalStatus: {
+    text: "โสด",
+    coding: [
+      {
+        system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+        code: "S",
+        display: "Never Married"
+      }
+    ]
+  },
+  address: [
+    {
+      use: "home",
+      type: "both",
+      text: "ที่อยู่",
+      line: [
+        "บ้านเลขที่ 123",
+        "หมู่ 1",
+        "ถนน ทดสอบ"
+      ],
+      city: "เมืองนนทบุรี",
+      district: "บางกระสอ",
+      state: "นนทบุรี",
+      postalCode: "11000",
+      country: "TH",
+      period: {
+        start: "1990-01-01T00:00:00Z"
+      },
+      address_code: 120102
+    }
+  ],
+  telecom: [
+    {
+      system: "phone",
+      value: "0888888888",
+      use: "mobile"
+    }
+  ],
+  nationality: {
+    text: "ไทย",
+    coding: [
+      {
+        system: "https://phr1.moph.go.th/api/CodingSystem?System=nationality",
+        code: "099",
+        display: "ไทย"
+      }
+    ]
+  }
 }
 
 const retrievalTemplate = {
-  cid: "0000000000000",
+  cid: "0000000000001",
   otp: "AA999999"
 }
 
@@ -45,15 +96,8 @@ export const templates = {
     },
     Patient: {
       ...patientBlock,
-      telecom: [
-        {
-          system: "phone",
-          value: "0888888888",
-          use: "mobile"
-        }
-      ],
-      deceasedBoolean: false,
       maritalStatus: {
+        text: "โสด",
         coding: [
           {
             system: "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
@@ -61,18 +105,7 @@ export const templates = {
             display: "Never Married"
           }
         ]
-      },
-      address: [
-        {
-          use: "home",
-          text: "123 ถนนทดสอบ",
-          city: "เมือง",
-          district: "ในเมือง",
-          state: "นนทบุรี",
-          postalCode: "11000",
-          country: "TH"
-        }
-      ]
+      }
     },
     AllergyIntolerance: [],
     CarePlan: [],
@@ -348,29 +381,30 @@ export const templates = {
   },
 
   "self-observation": {
-    system_name: "Home Monitoring",
-    location_gis: "13.756331,100.501765",
-    observation_ref_code: "00000:OBS00001",
-    person: {
-      cid: "0000000000000",
-      name: "นายทดสอบ ระบบ",
-      birthdate: "1990-01-01",
-      gender: "male"
+    system_name: "Application Test v1.0",
+    location_gis: {
+      latitude: "13.756331",
+      longitude: "100.501765"
     },
-    observation: [
-      {
-        loinc_code: "85354-9",
-        value: "120/80",
-        unit: "mmHg",
-        datetime: "2024-01-15T08:00:00+07:00"
-      },
-      {
-        loinc_code: "8310-5",
-        value: "36.5",
-        unit: "Cel",
-        datetime: "2024-01-15T08:00:00+07:00"
-      }
-    ]
+    observation_ref_code: "{00000-OBS00-00001-TEST-00001}",
+    person: {
+      cid: "0000000000001",
+      prefix: "นาย",
+      first_name: "ทดสอบ",
+      last_name: "ระบบ",
+      birth_date: "1990-01-01",
+      gender: "M"
+    },
+    observation: {
+      reference_id: "{00000-REF00-00001-TEST-00001}",
+      loinc_code: "15074-8",
+      loinc_display: "Glucose [Moles/volume] in Blood",
+      effective_datetime: "2024-01-15T08:00:00.000",
+      device_display: "Blood Glucose Monitor : 123456",
+      performer_display: "นายทดสอบ ระบบ",
+      observation_value: "155",
+      observation_unit: "mg/dL"
+    }
   },
 
   "caregiver": {
@@ -562,54 +596,54 @@ export const templates = {
   },
 
   "mask-encounter-set": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     encounter_ref_code: "00000:VN00001"
   },
 
   "mask-encounter-get": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     encounter_ref_code: "00000:VN00001"
   },
 
   "phr-setting-set": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     share_phr: true
   },
 
   "phr-setting-get": {
-    cid: "0000000000000"
+    cid: "0000000000001"
   },
 
   "request-token-v1": {
-    cid: "0000000000000"
+    cid: "0000000000001"
   },
 
   "validate-otp": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     otp: "AA999999"
   },
 
   "get-phr-otp": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     access_token: "xxxxxxxxxxxx"
   },
 
   "check-ekyc": {
-    cid: "0000000000000"
+    cid: "0000000000001"
   },
 
   "report-encounter-add": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     encounter_ref_code: "00000:VN00001",
     reason_text: "ข้อมูลไม่ถูกต้อง"
   },
 
   "report-encounter-delete": {
-    cid: "0000000000000",
+    cid: "0000000000001",
     encounter_ref_code: "00000:VN00001"
   },
 
   "report-encounter-list": {
-    cid: "0000000000000"
+    cid: "0000000000001"
   },
 }
