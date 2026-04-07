@@ -97,7 +97,11 @@ const uploadEndpoints = [
       Immunization: [{
         managingOrganization: { ...managingOrganization },
         status: "completed",
-        vaccineCode: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=vaccine_code", code: "COVID-19", display: "COVID-19 Vaccine" }], text: "Covid 19 - CoronaVac" },
+        vaccineCode: { coding: [{ system: "https://refcode.moph.go.th/vaccine", code: "C19", display: "COVID1" }], text: "Covid 19 - CoronaVac" },
+        doseQuantity: { value: 0.5, system: "http://unitsofmeasure.org", code: "mL" },
+        note: [{ text: "Notes on administration of vaccine" }],
+        reasonCode: [{ coding: [{ system: "http://snomed.info/sct", code: "429060002" }] }],
+        performer: { license_no: "ว000099", name: "นพ.ทดสอบ ระบบ" },
         encounterRefCode: "00000:VN00001",
         occurrenceDateTime: "2024-01-15T10:00:00+07:00",
         primarySource: true,
@@ -126,7 +130,11 @@ const uploadEndpoints = [
         priority: "routine",
         occurrenceDateTime: "2024-01-15T10:00:00.000Z",
         authoredOn: "2024-01-15",
-        serviceRequested: { coding: [{ system: "http://snomed.info/sct", code: "172676009", display: "Myringotomy and insertion of tympanic ventilation tube" }], text: "Insertion of grommets" }
+        requester: { agent: { reference: "Practitioner/ว000099", display: "นพ.ทดสอบ ระบบ" } },
+        serviceRequested: { coding: [{ system: "http://snomed.info/sct", code: "172676009", display: "Myringotomy and insertion of tympanic ventilation tube" }], text: "Insertion of grommets" },
+        context: { display: "ผู้ป่วยนอก" },
+        specialty: { coding: [{ system: "http://orionhealth.com/fhir/apps/specialties", code: "ent", display: "ENT" }], text: "แผนกอายุรกรรม" },
+        description: "", note: ""
       }]
     }
   },

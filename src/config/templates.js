@@ -329,9 +329,9 @@ export const templates = {
         vaccineCode: {
           coding: [
             {
-              system: "https://phr1.moph.go.th/api/CodingSystem?System=vaccine_code",
-              code: "COVID-19",
-              display: "COVID-19 Vaccine"
+              system: "https://refcode.moph.go.th/vaccine",
+              code: "C19",
+              display: "COVID1"
             }
           ],
           text: "Covid 19 - CoronaVac"
@@ -366,6 +366,21 @@ export const templates = {
           system: "http://unitsofmeasure.org",
           code: "mL"
         },
+        note: [
+          {
+            text: "Notes on administration of vaccine"
+          }
+        ],
+        reasonCode: [
+          {
+            coding: [
+              {
+                system: "http://snomed.info/sct",
+                code: "429060002"
+              }
+            ]
+          }
+        ],
         performer: {
           license_no: "ว000099",
           name: "นพ.ทดสอบ ระบบ"
@@ -421,7 +436,22 @@ export const templates = {
             }
           ],
           text: "Insertion of grommets"
-        }
+        },
+        context: {
+          display: "ผู้ป่วยนอก"
+        },
+        specialty: {
+          coding: [
+            {
+              system: "http://orionhealth.com/fhir/apps/specialties",
+              code: "ent",
+              display: "ENT"
+            }
+          ],
+          text: "แผนกอายุรกรรม"
+        },
+        description: "",
+        note: ""
       }
     ]
   },
