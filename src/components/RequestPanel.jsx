@@ -17,7 +17,7 @@ function MonacoFallback() {
 
 export default function RequestPanel({ onSend, sending }) {
   const { selectedEndpoint, requestBody, setRequestBody, resetTemplate } = useEndpoint()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, envHost } = useAuth()
 
   // For GET endpoints with queryParams
   const [queryParams, setQueryParams] = useState({})
@@ -102,7 +102,10 @@ export default function RequestPanel({ onSend, sending }) {
       {/* URL bar */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-700 bg-gray-800 shrink-0">
         <MethodBadge method={selectedEndpoint.method} />
-        <span className="font-mono text-sm text-gray-300 flex-1 truncate">{selectedEndpoint.path}</span>
+        <span className="font-mono text-sm flex-1 truncate">
+          <span className="text-gray-500">{envHost}</span>
+          <span className="text-gray-200">{selectedEndpoint.path}</span>
+        </span>
         {jsonValid !== null && selectedEndpoint.method !== 'GET' && (
           <span
             data-testid="json-validity"

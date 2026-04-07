@@ -3,8 +3,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 const AuthContext = createContext(null)
 
 const ENVIRONMENTS = {
-  uat: { label: 'UAT', proxyBase: '/proxy/uat' },
-  prod: { label: 'Production', proxyBase: '/proxy/prod' },
+  uat: { label: 'UAT', proxyBase: '/proxy/uat', host: 'https://203.150.143.180' },
+  prod: { label: 'Production', proxyBase: '/proxy/prod', host: 'https://phr1.moph.go.th' },
 }
 
 export function AuthProvider({ children }) {
@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
   }, [token, authMethod, env])
 
   const proxyBase = ENVIRONMENTS[env].proxyBase
+  const envHost = ENVIRONMENTS[env].host
   const authProxyBase = '/proxy/auth'
   const envLabel = ENVIRONMENTS[env].label
   const isAuthenticated = token.length > 0
@@ -36,7 +37,7 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{
       token, authMethod, env, setEnv,
-      proxyBase, authProxyBase, envLabel,
+      proxyBase, envHost, authProxyBase, envLabel,
       isAuthenticated, login, logout,
       environments: ENVIRONMENTS,
     }}>

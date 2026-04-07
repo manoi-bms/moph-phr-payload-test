@@ -34,7 +34,8 @@ describe('Endpoint selection → RequestPanel', () => {
     // Click on UpdatePHRv1
     fireEvent.click(screen.getByText('UpdatePHRv1'))
 
-    // Should now show the URL bar with the endpoint path
+    // Should now show the URL bar with the full endpoint URL
+    expect(screen.getByText('https://203.150.143.180')).toBeInTheDocument()
     expect(screen.getByText('/api/UpdatePHRv1')).toBeInTheDocument()
 
     // Should show the Send button
