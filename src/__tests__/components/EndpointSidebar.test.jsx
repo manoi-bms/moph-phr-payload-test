@@ -44,7 +44,7 @@ describe('EndpointSidebar', () => {
 
   it('shows endpoint count per group', () => {
     render(<EndpointSidebar />)
-    // Should show count badges — at least "10" for upload
-    expect(screen.getByText('10')).toBeInTheDocument()
+    // Should show count badges — "8" for upload
+    expect(screen.getByText('8')).toBeInTheDocument()
   })
 })

@@ -28,7 +28,7 @@ describe('endpoints', () => {
   })
 
   it('has upload endpoints', () => {
-    expect(getEndpointsByGroup('upload').length).toBeGreaterThanOrEqual(10)
+    expect(getEndpointsByGroup('upload').length).toBeGreaterThanOrEqual(8)
   })
 
   it('has retrieval endpoints', () => {

@@ -531,70 +531,6 @@ export const templates = {
     ]
   },
 
-  "medication-request": {
-    managingOrganization: { ...managingOrganization },
-    Patient: { ...patientBlock },
-    MedicationRequest: [
-      {
-        identifier: [
-          {
-            use: "official",
-            system: "https://phr1.moph.go.th/eprescription",
-            value: "00000:MED00001"
-          }
-        ],
-        status: "active",
-        intent: "order",
-        medication: {
-          coding: [
-            {
-              system: "https://www.this.or.th/tmt/gp",
-              code: "811043",
-              display: "METFORMIN 500 mg."
-            }
-          ]
-        },
-        encounter_ref_code: "00000:VN00001",
-        authoredOn: "2024-01-15T10:00:00+07:00",
-        requester: {
-          reference: "Practitioner/ว000099",
-          display: "นพ.ทดสอบ ระบบ"
-        },
-        dosageInstruction: [
-          {
-            text: "รับประทานครั้งละ 1 เม็ด วันละ 2 ครั้ง หลังอาหาร",
-            timing: {
-              repeat: {
-                frequency: 2,
-                period: 1,
-                periodUnit: "d"
-              }
-            },
-            route: {
-              coding: [
-                {
-                  system: "http://snomed.info/sct",
-                  code: "26643006",
-                  display: "Oral route"
-                }
-              ]
-            }
-          }
-        ],
-        dispenseRequest: {
-          quantity: {
-            value: 60,
-            unit: "tablets"
-          },
-          expectedSupplyDuration: {
-            value: 30,
-            unit: "days"
-          }
-        }
-      }
-    ]
-  },
-
   "encounter-summary": {
     managingOrganization: { ...managingOrganization },
     EncounterSummary: [
@@ -603,36 +539,6 @@ export const templates = {
         period_end: "2024-01-31",
         opd_count: 150,
         ipd_count: 25
-      }
-    ]
-  },
-
-  "drug-related-problem": {
-    managingOrganization: { ...managingOrganization },
-    Patient: { ...patientBlock },
-    DrugRelatedProblem: [
-      {
-        drp_ref_code: "00000:DRP00001",
-        medication: {
-          coding: [
-            {
-              system: "https://www.this.or.th/tmt/gp",
-              code: "811043",
-              display: "METFORMIN 500 mg."
-            }
-          ]
-        },
-        category: {
-          coding: [
-            {
-              system: "https://phr1.moph.go.th/api/CodingSystem?System=drp_category",
-              code: "1",
-              display: "Drug Interaction"
-            }
-          ]
-        },
-        description: "พบปฏิกิริยาระหว่างยา",
-        recordedDate: "2024-01-15T10:00:00+07:00"
       }
     ]
   },
