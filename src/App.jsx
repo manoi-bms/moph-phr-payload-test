@@ -1,20 +1,24 @@
 import { useState, useCallback } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { EndpointProvider, useEndpoint } from './context/EndpointContext'
+import { HistoryProvider } from './context/HistoryContext'
+import { useHistory } from './context/HistoryContext'
 import { useAuth } from './context/AuthContext'
 import AuthBar from './components/AuthBar'
 import AuthModal from './components/AuthModal'
 import EndpointSidebar from './components/EndpointSidebar'
 import RequestPanel from './components/RequestPanel'
 import ResponsePanel from './components/ResponsePanel'
+import HistoryBar from './components/HistoryBar'
 import { sendRequest } from './utils/apiClient'
 
 function MainContent() {
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [sending, setSending] = useState(false)
   const [response, setResponse] = useState(null)
-  const { selectedEndpoint } = useEndpoint()
+  const { selectedEndpoint, selectEndpoint, setRequestBody } = useEndpoint()
   const { token, proxyBase } = useAuth()
+  const { addEntry } = useHistory()
 
   const handleSend = useCallback(async (data) => {
     if (!selectedEndpoint) return
@@ -45,6 +49,16 @@ function MainContent() {
         proxyBase,
       })
       setResponse(result)
+      addEntry({
+        endpointId: selectedEndpoint.id,
+        endpointName: selectedEndpoint.name,
+        method: selectedEndpoint.method,
+        path: selectedEndpoint.path,
+        status: result.status,
+        elapsed: result.elapsed,
+        requestBody: data.body || JSON.stringify(data.queryParams || {}),
+        responseData: result.data,
+      })
     } catch (err) {
       setResponse({
         status: 0,
@@ -57,7 +71,23 @@ function MainContent() {
     } finally {
       setSending(false)
     }
-  }, [selectedEndpoint, token, proxyBase])
+  }, [selectedEndpoint, token, proxyBase, addEntry])
+
+  const handleReplay = useCallback((entry) => {
+    selectEndpoint(entry.endpointId)
+    // Need to set requestBody after a tick since selectEndpoint also sets it
+    setTimeout(() => {
+      setRequestBody(entry.requestBody)
+      setResponse({
+        status: entry.status,
+        statusText: entry.status > 0 ? 'OK' : 'Error',
+        data: entry.responseData,
+        elapsed: entry.elapsed,
+        url: null,
+        error: entry.status === 0 ? 'Replayed from history' : null,
+      })
+    }, 0)
+  }, [selectEndpoint, setRequestBody])
 
   return (
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
@@ -75,6 +105,7 @@ function MainContent() {
           </div>
         </main>
       </div>
+      <HistoryBar onReplay={handleReplay} />
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </div>
   )
@@ -84,7 +115,9 @@ export default function App() {
   return (
     <AuthProvider>
       <EndpointProvider>
-        <MainContent />
+        <HistoryProvider>
+          <MainContent />
+        </HistoryProvider>
       </EndpointProvider>
     </AuthProvider>
   )
