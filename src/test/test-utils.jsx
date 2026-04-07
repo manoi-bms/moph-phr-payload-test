@@ -1,9 +1,16 @@
 import { render } from '@testing-library/react'
 import { AuthProvider } from '../context/AuthContext'
+import { EndpointProvider } from '../context/EndpointContext'
 
 function renderWithProviders(ui, options = {}) {
   function Wrapper({ children }) {
-    return <AuthProvider>{children}</AuthProvider>
+    return (
+      <AuthProvider>
+        <EndpointProvider>
+          {children}
+        </EndpointProvider>
+      </AuthProvider>
+    )
   }
   return render(ui, { wrapper: Wrapper, ...options })
 }
