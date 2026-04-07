@@ -1,8 +1,11 @@
 import { render } from '@testing-library/react'
+import { AuthProvider } from '../context/AuthContext'
 
-// Will be expanded with providers in later tasks
 function renderWithProviders(ui, options = {}) {
-  return render(ui, { ...options })
+  function Wrapper({ children }) {
+    return <AuthProvider>{children}</AuthProvider>
+  }
+  return render(ui, { wrapper: Wrapper, ...options })
 }
 
 export * from '@testing-library/react'
