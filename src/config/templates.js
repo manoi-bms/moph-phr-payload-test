@@ -79,7 +79,8 @@ const patientBlock = {
         display: "ไทย"
       }
     ]
-  }
+  },
+  contact: []
 }
 
 const retrievalTemplate = {
@@ -500,18 +501,23 @@ export const templates = {
         intent: "directive",
         name: {
           use: "official",
-          text: "นางสาวดูแล ผู้ป่วย",
           languageCode: "TH",
-          family: "ผู้ป่วย",
-          given: ["ดูแล"],
+          text: "นางสาวดูแล ผู้ป่วย",
           prefix: ["นางสาว"],
-          suffix: [],
-          period: {
-            start: "1995-01-01T00:00:00.000Z"
-          }
+          given: ["ดูแล"],
+          family: "ผู้ป่วย",
+          suffix: [""]
+        },
+        care_giver_name: {
+          use: "official",
+          languageCode: "TH",
+          text: "นายทดสอบ ระบบ",
+          prefix: ["นาย"],
+          given: ["ทดสอบ"],
+          family: "ระบบ",
+          suffix: [""]
         },
         telecom_phone: "0999999999",
-        care_giver_name: "นางสาวดูแล ผู้ป่วย",
         qualification: {
           coding: [
             {

@@ -167,9 +167,9 @@ const uploadEndpoints = [
       CareGiver: [{
         identifier: [{ use: "official", system: "https://www.dopa.go.th", type: "CID", value: "0000000000001" }],
         active: true, intent: "directive",
-        name: { use: "official", text: "นางสาวดูแล ผู้ป่วย", languageCode: "TH", family: "ผู้ป่วย", given: ["ดูแล"], prefix: ["นางสาว"], suffix: [], period: { start: "1995-01-01T00:00:00.000Z" } },
+        name: { use: "official", languageCode: "TH", text: "นางสาวดูแล ผู้ป่วย", prefix: ["นางสาว"], given: ["ดูแล"], family: "ผู้ป่วย", suffix: [""] },
+        care_giver_name: { use: "official", languageCode: "TH", text: "นายทดสอบ ระบบ", prefix: ["นาย"], given: ["ทดสอบ"], family: "ระบบ", suffix: [""] },
         telecom_phone: "0999999999",
-        care_giver_name: "นางสาวดูแล ผู้ป่วย",
         qualification: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=caregiver_type", code: "1", display: "บุคคลในครอบครัวเดียวกัน" }] }
       }]
     }
