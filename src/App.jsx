@@ -61,6 +61,17 @@ function MainContent() {
         proxyBase,
       })
       setResponse(result)
+
+      // Alert user about processing warnings (server returns 200 but data has issues)
+      if (result.data?.processing_warning?.length > 0) {
+        const count = result.data.processing_warning.length
+        showToast(
+          `${count} processing warning${count > 1 ? 's' : ''} — payload accepted but has validation issues that need fixing`,
+          'warning',
+          8000
+        )
+      }
+
       addEntry({
         endpointId: selectedEndpoint.id,
         endpointName: selectedEndpoint.name,

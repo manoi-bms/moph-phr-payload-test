@@ -112,11 +112,13 @@ export const templates = {
     CarePlan: [],
     Encounter: [
       {
+        managingOrganization: { ...managingOrganization },
         identifier: [
           {
             use: "official",
-            system: "https://bps.moph.go.th/hcode/5",
-            value: "00000:VN00001"
+            system: "https://bps.moph.go.th/vn",
+            type: "VN",
+            value: "VN00001"
           }
         ],
         status: "finished",
@@ -125,21 +127,38 @@ export const templates = {
           code: "AMB",
           display: "ambulatory"
         },
-        type: [
-          {
-            coding: [
-              {
-                system: "https://phr1.moph.go.th/api/CodingSystem?System=encounter_type",
-                code: "1",
-                display: "มาเอง (ห้องบัตร)"
-              }
-            ]
-          }
-        ],
+        type: {
+          coding: [
+            {
+              system: "https://phr1.moph.go.th/api/CodingSystem?System=encounter_type",
+              code: "1",
+              display: "มาเอง (ห้องบัตร)"
+            }
+          ],
+          text: "มาเอง (ห้องบัตร)"
+        },
+        priority: {
+          coding: [
+            {
+              system: "http://terminology.hl7.org/CodeSystem/v3-ActPriority",
+              code: "0",
+              display: "ปกติ"
+            }
+          ],
+          text: "ปกติ"
+        },
         period: {
           start: "2024-01-15T08:30:00.000Z",
           end: "2024-01-15T12:00:00.000Z"
         },
+        subject: {
+          reference: "Patient/0000000000001",
+          display: "นายทดสอบ ระบบ"
+        },
+        participant: [],
+        reason: [
+          "ตรวจสุขภาพทั่วไป"
+        ],
         Coverage: [
           {
             class_group: {
@@ -160,6 +179,7 @@ export const templates = {
         },
         Observation: [
           {
+            status: "final",
             code: {
               coding: [
                 {
@@ -167,13 +187,15 @@ export const templates = {
                   code: "2345-7",
                   display: "Glucose"
                 }
-              ]
+              ],
+              text: "Glucose"
             },
             valueQuantity: {
               value: 100,
               unit: "mg/dL"
             },
-            effectiveDateTime: "2024-01-15T09:00:00.000Z"
+            effectiveDateTime: "2024-01-15T09:00:00.000Z",
+            issued: "2024-01-15T09:00:00.000Z"
           }
         ],
         Condition: [
@@ -187,11 +209,40 @@ export const templates = {
                 }
               ]
             },
+            verificationStatus: {
+              coding: [
+                {
+                  system: "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                  code: "confirmed",
+                  display: "Confirmed"
+                }
+              ]
+            },
+            category: [
+              {
+                coding: [
+                  {
+                    system: "http://snomed.info/sct",
+                    code: "439401001",
+                    display: "Diagnosis"
+                  }
+                ]
+              }
+            ],
+            severity: {
+              coding: [
+                {
+                  system: "http://snomed.info/sct",
+                  code: "24484000",
+                  display: "Severe"
+                }
+              ]
+            },
             code: {
               coding: [
                 {
                   system: "http://hl7.org/fhir/sid/icd-10",
-                  code: "E11.9",
+                  code: "E119",
                   display: "Type 2 diabetes mellitus without complications"
                 }
               ]
@@ -207,10 +258,37 @@ export const templates = {
                   code: "811043",
                   display: "METFORMIN 500 mg."
                 }
+              ],
+              text: "METFORMIN 500 mg."
+            },
+            statement: {
+              status: "active",
+              category: {
+                coding: [
+                  {
+                    system: "http://terminology.hl7.org/CodeSystem/medication-statement-category",
+                    code: "outpatient",
+                    display: "Outpatient"
+                  }
+                ]
+              },
+              effectiveDateTime: "2024-01-15T08:30:00.000Z",
+              dosage: [
+                {
+                  sequence: 1,
+                  text: "รับประทานครั้งละ 1 เม็ด วันละ 2 ครั้ง หลังอาหาร",
+                  patientInstruction: "รับประทานหลังอาหาร เช้า-เย็น",
+                  timing: {
+                    repeat: {
+                      frequency: 2,
+                      period: 1,
+                      periodUnit: "d"
+                    }
+                  }
+                }
               ]
             },
-            status: "active",
-            category: "Outpatient"
+            category: "medication"
           }
         ],
         Claim: [],

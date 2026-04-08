@@ -38,16 +38,21 @@ const uploadEndpoints = [
       AllergyIntolerance: [],
       CarePlan: [],
       Encounter: [{
-        identifier: [{ use: "official", system: "https://bps.moph.go.th/hcode/5", value: "00000:VN00001" }],
+        managingOrganization: { ...managingOrganization },
+        identifier: [{ use: "official", system: "https://bps.moph.go.th/vn", type: "VN", value: "VN00001" }],
         status: "finished",
         class: { system: "http://terminology.hl7.org/CodeSystem/v3-ActCode", code: "AMB", display: "ambulatory" },
-        type: [{ coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=encounter_type", code: "1", display: "มาเอง (ห้องบัตร)" }] }],
+        type: { coding: [{ system: "https://phr1.moph.go.th/api/CodingSystem?System=encounter_type", code: "1", display: "มาเอง (ห้องบัตร)" }], text: "มาเอง (ห้องบัตร)" },
+        priority: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/v3-ActPriority", code: "0", display: "ปกติ" }], text: "ปกติ" },
         period: { start: "2024-01-15T08:30:00.000Z", end: "2024-01-15T12:00:00.000Z" },
+        subject: { reference: "Patient/0000000000001", display: "นายทดสอบ ระบบ" },
+        participant: [],
+        reason: ["ตรวจสุขภาพทั่วไป"],
         Coverage: [{ class_group: { value: "UCS", name: "สิทธิหลักประกันสุขภาพแห่งชาติ" } }],
         vital_signs: { body_weight_kg: 65, body_height_cm: 170, body_temp_cel: 36.5, bp_systolic_mmhg: 120, bp_diastolic_mmhg: 80, body_mass_index: 22.5, respiratory_rate: 18, pulse: 72 },
-        Observation: [{ code: { coding: [{ system: "http://loinc.org", code: "2345-7", display: "Glucose" }] }, valueQuantity: { value: 100, unit: "mg/dL" }, effectiveDateTime: "2024-01-15T09:00:00.000Z" }],
-        Condition: [{ clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active", display: "Active" }] }, code: { coding: [{ system: "http://hl7.org/fhir/sid/icd-10", code: "E11.9", display: "Type 2 diabetes mellitus without complications" }] } }],
-        Medication: [{ code: { coding: [{ system: "https://www.this.or.th/tmt/gp", code: "811043", display: "METFORMIN 500 mg." }] }, status: "active", category: "Outpatient" }],
+        Observation: [{ status: "final", issued: "2024-01-15T09:00:00.000Z", code: { coding: [{ system: "http://loinc.org", code: "2345-7", display: "Glucose" }], text: "Glucose" }, valueQuantity: { value: 100, unit: "mg/dL" }, effectiveDateTime: "2024-01-15T09:00:00.000Z" }],
+        Condition: [{ clinicalStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-clinical", code: "active", display: "Active" }] }, verificationStatus: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/condition-ver-status", code: "confirmed", display: "Confirmed" }] }, category: [{ coding: [{ system: "http://snomed.info/sct", code: "439401001", display: "Diagnosis" }] }], severity: { coding: [{ system: "http://snomed.info/sct", code: "24484000", display: "Severe" }] }, code: { coding: [{ system: "http://hl7.org/fhir/sid/icd-10", code: "E119", display: "Type 2 diabetes mellitus without complications" }] } }],
+        Medication: [{ code: { coding: [{ system: "https://www.this.or.th/tmt/gp", code: "811043", display: "METFORMIN 500 mg." }], text: "METFORMIN 500 mg." }, statement: { status: "active", category: { coding: [{ system: "http://terminology.hl7.org/CodeSystem/medication-statement-category", code: "outpatient", display: "Outpatient" }] }, effectiveDateTime: "2024-01-15T08:30:00.000Z", dosage: [{ sequence: 1, text: "รับประทานครั้งละ 1 เม็ด วันละ 2 ครั้ง หลังอาหาร", patientInstruction: "รับประทานหลังอาหาร เช้า-เย็น", timing: { repeat: { frequency: 2, period: 1, periodUnit: "d" } } }] }, category: "medication" }],
         Claim: [], Appointment: [], Immunization: [], DiagnosticReport: []
       }]
     }

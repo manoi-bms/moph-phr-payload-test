@@ -71,6 +71,9 @@ export default function ResponsePanel({ response, loading }) {
         ? 'text-red-400'
         : 'text-gray-400'
 
+  // Extract processing warnings from response data
+  const warnings = response.data?.processing_warning || []
+
   return (
     <div className="flex-1 flex flex-col min-h-0 border-t border-gray-700">
       {/* Status bar */}
@@ -91,10 +94,36 @@ export default function ResponsePanel({ response, loading }) {
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
+        {warnings.length > 0 && (
+          <span className="px-2 py-0.5 rounded text-xs font-bold bg-amber-600 text-amber-100">
+            {warnings.length} warning{warnings.length > 1 ? 's' : ''}
+          </span>
+        )}
         {response.url && (
           <span className="text-xs text-gray-600 font-mono truncate flex-1 text-right">{response.url}</span>
         )}
       </div>
+
+      {/* Processing warnings banner */}
+      {warnings.length > 0 && (
+        <div className="bg-amber-950 border-b border-amber-700 px-3 py-2 shrink-0" data-testid="processing-warnings">
+          <div className="flex items-start gap-2">
+            <span className="text-amber-400 text-sm font-bold shrink-0 mt-0.5">&#9888;</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-amber-300 text-xs font-semibold mb-1">
+                Processing Warnings — Payload accepted but has validation issues that need fixing:
+              </p>
+              <ul className="space-y-0.5">
+                {warnings.map((warning, i) => (
+                  <li key={i} className="text-amber-200 text-xs font-mono break-all">
+                    &bull; {warning}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Response body */}
       <div className="flex-1 min-h-0">
